@@ -1,0 +1,33 @@
+.main {
+    display: flex;
+    align-items: left;
+}
+
+@media (max-width: 600px) {
+    .grid {
+    width: 100%;
+    flex-direction: column;
+    }
+}
+
+.title{
+    width: 30%;
+    display: inline-block;
+    text-align: center;
+    font-size: 40px;
+}
+
+.a {
+    color: rgb(61, 199, 61);
+}
+
+.form {
+    background-color: rgb(233, 232, 232);
+    width: 70%;
+    display: inline-block;
+    text-align: center;
+}
+
+.conselor {
+    font-size: 40px;
+}
