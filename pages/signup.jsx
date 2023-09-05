@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Title } from "../components/Title";
 
 const Signup = () => {
   const {
@@ -14,18 +15,83 @@ const Signup = () => {
   const router = useRouter();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [errorData, setErrorData] = useState("");
+  const [error, setError] = useState("");
+
+  const formItems = [
+    {
+      label: "管理企業ID",
+      name: "register_id",
+      rules: { required: "入力が必須の項目です。" },
+    },
+    {
+      label: "氏名",
+      name: "name",
+      rules: { required: "入力が必須の項目です。" },
+    },
+    {
+      label: "氏名(カナ)",
+      name: "name_kana",
+      rules: { required: "入力が必須の項目です。" },
+    },
+    {
+      label: "携帯電話番号[ハイフンなし]",
+      name: "phone_number",
+      rules: {
+        required: "入力が必須の項目です。",
+        pattern: {
+          value: /^0\d{9,10}$/,
+          message: "正しい電話番号を入力してください。",
+        },
+      },
+    },
+    {
+      label: "メールアドレス",
+      name: "email_address",
+      rules: {
+        required: "入力が必須の項目です。",
+        pattern: {
+          value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
+          message: "正しいメールアドレス形式を入力してください。",
+        },
+      },
+    },
+    {
+      label: "パスワード[8桁以上]",
+      name: "password",
+      rules: {
+        required: "入力が必須の項目です。",
+        minLength: {
+          value: 8,
+          message: "8文字以上入力してください。",
+        },
+      },
+    },
+    {
+      label: "パスワード[確認]",
+      name: "password_confirmation",
+      rules: {
+        required: "確認のためパスワードを再入力してください。",
+        minLength: {
+          value: 8,
+          message: "8文字以上入力してください。",
+        },
+        validate: (value) =>
+          value === getValues("password") || "パスワードが一致しません",
+      },
+    },
+  ];
 
   const fetchData = async (data) => {
     try {
-      const response = await axios.post("http://localhost/api/signup", data);
+      const response = await axios.post("http://localhost:80/api/signup", data);
       router.push("/login");
       setSuccessMessage("登録成功しました。");
       console.log("Registration successful!", response.data);
     } catch (error) {
       const errorData = error.response?.data || {};
-      setErrorData(errorData);
+      setError(errorData);
       setErrorMessage("登録失敗しました。");
+      console.log(errorData);
       console.error("Registration failed:", error);
     }
   };
@@ -34,112 +100,52 @@ const Signup = () => {
     fetchData(data);
   };
 
-  console.log(errorData);
-
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <div className={styles.title}>
-          <div className={styles.a}>
-            <h2>SIGN UP</h2>
-          </div>
-          <div className={styles.b}>
-            <p>管理者情報登録</p>
-          </div>
+    <div>
+      <main className="flex flex-row min-h-screen">
+        {/* <Title info={{ title: "SIGN UP", subtitle: "管理者情報登録" }} /> */}
+        <div className="bg-white w-1/3 max-h-full py-20 pl-10">
+          <h1 className="text-6xl text-green-400 font-extrabold">SIGNUP</h1>
+          <h2 className="text-2xl py-2 font-bold">管理者情報登録</h2>
         </div>
-        <div className={styles.form}>
-          <div className={styles.formtitle}>
-            <p>管理者情報</p>
+        <div className="bg-gray-200 w-2/3 px-20 pt-40">
+          <h2 className="font-bold text-4xl border-b-4 border-green-400 text-left pb-3">
+            管理者情報
+          </h2>
+          <div>
+            <form onSubmit={handleSubmit(onSubmit)} className="px-20 py-20">
+              <div className={styles.formData}>
+                {formItems.map(({ label, name, rules }) => (
+                  <div key={name} className="mb-5">
+                    <label className="font-bold">{label}</label>
+                    <input
+                      className="mt-4 block w-full p-2 rounded-lg"
+                      type={name.includes("password") ? "password" : "text"}
+                      {...register(name, rules)}
+                    />
+                    {errors[name] && (
+                      <div className="text-red-500 text-lg font-semibold">
+                        {errors[name]?.message}
+                      </div>
+                    )}
+                    {error && (
+                      <div className="text-red-500 text-lg font-semibold">
+                        {error.errors[name]}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="text-center">
+                <button
+                  type=""
+                  className="bg-green-400 font-bold text-lg rounded-3xl text-white px-4 py-2 my-10 w-2/3 shadow-lg"
+                >
+                  登録する
+                </button>
+              </div>
+            </form>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className={styles.formData}>
-              {[
-                {
-                  label: "管理企業ID",
-                  name: "register_id",
-                  rules: { required: "入力が必須の項目です。" },
-                },
-                {
-                  label: "氏名",
-                  name: "name",
-                  rules: { required: "入力が必須の項目です。" },
-                },
-                {
-                  label: "氏名(カナ)",
-                  name: "name_kana",
-                  rules: { required: "入力が必須の項目です。" },
-                },
-                {
-                  label: "携帯電話番号[ハイフンなし]",
-                  name: "phone_number",
-                  rules: {
-                    required: "入力が必須の項目です。",
-                    pattern: {
-                      value: /^0\d{9,10}$/,
-                      message: "正しい電話番号を入力してください。",
-                    },
-                  },
-                },
-                {
-                  label: "メールアドレス",
-                  name: "email_address",
-                  rules: {
-                    required: "入力が必須の項目です。",
-                    pattern: {
-                      value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
-                      message: "正しいメールアドレス形式を入力してください。",
-                    },
-                  },
-                },
-                {
-                  label: "パスワード[8桁以上]",
-                  name: "password",
-                  rules: {
-                    required: "入力が必須の項目です。",
-                    minLength: {
-                      value: 8,
-                      message: "8文字以上入力してください。",
-                    },
-                  },
-                },
-                {
-                  label: "パスワード[確認]",
-                  name: "password_confirmation",
-                  rules: {
-                    required: "確認のためパスワードを再入力してください。",
-                    minLength: {
-                      value: 8,
-                      message: "8文字以上入力してください。",
-                    },
-                    validate: (value) =>
-                      value === getValues("password") ||
-                      "パスワードが一致しません",
-                  },
-                },
-              ].map(({ label, name, rules }) => (
-                <div key={name}>
-                  <p>{label}</p>
-                  <input
-                    type={name.includes("password") ? "password" : "text"}
-                    {...register(name, rules)}
-                  />
-                  {errors[name] && (
-                    <div className={styles.errors}>{errors[name]?.message}</div>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div>
-              <button type="submit" className={styles.button}>
-                登録する
-              </button>
-              {errorData && (
-                <div className="alert">
-                  {errorData.message || "エラーが発生しました"}
-                </div>
-              )}
-            </div>
-          </form>
         </div>
       </main>
     </div>
