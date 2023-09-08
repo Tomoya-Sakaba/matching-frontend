@@ -1,4 +1,3 @@
-import styles from "./signup.module.css";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -13,8 +12,6 @@ const Signup = () => {
     getValues,
   } = useForm();
   const router = useRouter();
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [error, setError] = useState("");
 
   const formItems = [
@@ -85,12 +82,10 @@ const Signup = () => {
     try {
       const response = await axios.post("http://localhost:80/api/signup", data);
       router.push("/login");
-      setSuccessMessage("登録成功しました。");
       console.log("Registration successful!", response.data);
     } catch (error) {
       const errorData = error.response?.data || {};
       setError(errorData);
-      setErrorMessage("登録失敗しました。");
       console.log(errorData);
       console.error("Registration failed:", error);
     }
@@ -103,39 +98,34 @@ const Signup = () => {
   return (
     <div>
       <main className="flex flex-row min-h-screen">
-        {/* <Title info={{ title: "SIGN UP", subtitle: "管理者情報登録" }} /> */}
-        <div className="bg-white w-1/3 max-h-full py-20 pl-10">
-          <h1 className="text-6xl text-green-400 font-extrabold">SIGNUP</h1>
-          <h2 className="text-2xl py-2 font-bold">管理者情報登録</h2>
-        </div>
+        <Title info={{ title: "SIGN UP", subtitle: "管理者情報登録" }} />
         <div className="bg-gray-200 w-2/3 px-20 pt-40">
           <h2 className="font-bold text-4xl border-b-4 border-green-400 text-left pb-3">
             管理者情報
           </h2>
           <div>
             <form onSubmit={handleSubmit(onSubmit)} className="px-20 py-20">
-              <div className={styles.formData}>
-                {formItems.map(({ label, name, rules }) => (
-                  <div key={name} className="mb-5">
-                    <label className="font-bold">{label}</label>
-                    <input
-                      className="mt-4 block w-full p-2 rounded-lg"
-                      type={name.includes("password") ? "password" : "text"}
-                      {...register(name, rules)}
-                    />
-                    {errors[name] && (
-                      <div className="text-red-500 text-lg font-semibold">
-                        {errors[name]?.message}
-                      </div>
-                    )}
-                    {error && (
-                      <div className="text-red-500 text-lg font-semibold">
-                        {error.errors[name]}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+              {formItems.map(({ label, name, rules }) => (
+                <div key={name} className="mb-5">
+                  <label className="font-bold">{label}</label>
+                  <input
+                    className="mt-4 block w-full p-2 rounded-lg"
+                    type={name.includes("password") ? "password" : "text"}
+                    {...register(name, rules)}
+                  />
+                  {errors[name] && (
+                    <div className="text-red-500 text-lg font-semibold">
+                      {errors[name]?.message}
+                    </div>
+                  )}
+                  {error && (
+                    <div className="text-red-500 text-lg font-semibold">
+                      {error.errors[name]}
+                    </div>
+                  )}
+                </div>
+              ))}
+
               <div className="text-center">
                 <button
                   type=""

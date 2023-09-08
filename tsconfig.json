@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,9 +18,13 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "pages/signup/signup_counselor.jsx", "pages/login.jsx", "pages/signup.jsx", "pages/index.jsx", "pages/top.jsx"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "**/*.tsx",
+    "pages/signup/signup_counselor.jsx",
+    "pages/login.jsx",
+    "pages/signup.jsx",
+    "pages/index.jsx",
+    "pages/top.jsx",
+    "src/pages/_app.jsx"
+  ],
+  "exclude": ["node_modules"]
 }
